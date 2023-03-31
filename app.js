@@ -87,15 +87,6 @@ function register(fullname, username, email, phonenumber, password, EnterThePass
             }
         }
     }
-
-
-
-
-
-
-
-
-
 }
 
 function changePassword(currentPassword, newPassword, enterNewPassword) {
