@@ -9,7 +9,6 @@ const users = [
     { fullname: "giap van thanh dat", username: "thanhdat", email: "admin123@gmail.com", phonenumber: "0987654321", password: "12345678", EnterThePassword: "12345678" },
 ];
 
-var exist = false;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[0-9]{10}$/;
 const passwordRegex = /^[A-Za-z0-9]*$/
@@ -19,32 +18,33 @@ function login(username, password) {
     if (username.length == 0 || password.length == 0) {
         return { isSuccess: false, message: "Tên đăng nhập hoặc mật khẩu không được bỏ trống!", };
     }
+
     if (typeof username != "string" || typeof password != "string") {
         return { isSuccess: false, message: "Sai định dạng dữ liệu" }
     }
 
-    if (password.length > 6) {
-        if (username == password) {
-            return { isSuccess: false, message: "Tên tài khoản và mật khẩu phải khác nhau" };
+    if (password.length < 6) {
+        return { isSuccess: false, message: "Mật khẩu phải lớn hơn 6 ký tự!" }
+    }
+
+    if (username == password) {
+        return { isSuccess: false, message: "Tên tài khoản và mật khẩu phải khác nhau" };
+    }
+
+    if (!password.match(passwordRegex) || !username.match(usernameRegex)) {
+        return { isSuccess: false, message: "Tài khoản hoặc mật khẩu không hợp lệ!", };
+    }
+
+    for (let i = 0; i <= users.length - 1; i++) {
+        if (users[i].username != username) {
+            return { isSuccess: false, message: "Tài khoản không tồn tại" };
         } else {
-            if (!password.match(passwordRegex) || !username.match(usernameRegex)) {
-                return { isSuccess: false, message: "Tài khoản hoặc mật khẩu không hợp lệ!", };
+            if (username == users[i].username && password == users[i].password) {
+                return { isSuccess: true, message: "Đăng nhập thành công!" }
             } else {
-                for (let i = 0; i <= users.length - 1; i++) {
-                    if (users[i].username != username) {
-                        return { isSuccess: false, message: "Tài khoản không tồn tại" };
-                    } else {
-                        if (username == users[i].username && password == users[i].password) {
-                            return { isSuccess: true, message: "Đăng nhập thành công!" }
-                        } else {
-                            return { isSuccess: false, message: "Đăng nhập không thành công!", };
-                        }
-                    }
-                }
+                return { isSuccess: false, message: "Đăng nhập không thành công!", };
             }
         }
-    } else {
-        return { isSuccess: false, message: "Mật khẩu phải lớn hơn 6 ký tự!" }
     }
 
 
@@ -60,33 +60,38 @@ function register(fullname, username, email, phonenumber, password, EnterThePass
         return { isSuccess: false, message: 'Sai định dạng dữ liệu!' }
     }
 
-    if (username.length > 6 && password.length > 6) {
-        if (username == password) {
-            return { isSuccess: false, message: 'Tài khoản và mật khẩu không được trùng nhau!' }
-        } else {
-            if (password != EnterThePassword) {
-                return { isSuccess: false, message: 'Mật khẩu nhập lại không trùng khớp!' }
-            } else {
-                if (!username.match(usernameRegex) || !email.match(emailRegex) || !phonenumber.match(phoneRegex) || !password.match(passwordRegex) || !EnterThePassword.match(passwordRegex)) {
-                    return { isSuccess: false, message: 'Thông tin tài khoản không hợp lệ!' }
-                } else {
-                    for (let i = 0; i <= users.length - 1; i++) {
-                        if (users[i].username == username || users[i].email == email || users[i].phonenumber == phonenumber) {
-                            return { isSuccess: false, message: 'Tài khoản bạn đăng kí đã tồn tại!' }
-                        } else {
-                            if (username != users[i].username && email != users[i].email && phonenumber != users[i].phonenumber) {
-                                return { isSuccess: false, message: 'Chúc mừng. Bạn đã đăng kí thành công!' }
-                            } else {
-                                return { isSuccess: false, message: 'Đăng kí không thành công!' }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else {
+    if (username.length < 6 && password.length < 6) {
         return { isSuccess: false, message: 'Tên đăng nhập và mật khẩu không được < 6 kí tự!' }
     }
+
+    if (username == password) {
+        return { isSuccess: false, message: 'Tài khoản và mật khẩu không được trùng nhau!' }
+    }
+
+    if (password != EnterThePassword) {
+        return { isSuccess: false, message: 'Mật khẩu nhập lại không trùng khớp!' }
+    }
+
+    if (!username.match(usernameRegex) || !email.match(emailRegex) || !phonenumber.match(phoneRegex) || !password.match(passwordRegex) || !EnterThePassword.match(passwordRegex)) {
+        return { isSuccess: false, message: 'Thông tin tài khoản không hợp lệ!' }
+    }
+
+    for (let i = 0; i <= users.length - 1; i++) {
+        if (users[i].username == username || users[i].email == email || users[i].phonenumber == phonenumber) {
+            return { isSuccess: false, message: 'Tài khoản bạn đăng kí đã tồn tại!' }
+        } else {
+            if (username != users[i].username && email != users[i].email && phonenumber != users[i].phonenumber) {
+                return { isSuccess: false, message: 'Chúc mừng. Bạn đã đăng kí thành công!' }
+            } else {
+                return { isSuccess: false, message: 'Đăng kí không thành công!' }
+            }
+        }
+    }
+
+
+
+
+
 
 
 
